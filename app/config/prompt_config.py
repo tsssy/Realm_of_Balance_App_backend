@@ -8,9 +8,11 @@ from typing import Dict, List, Optional
 
 class PromptType(str, Enum):
     """提示词类型枚举"""
-    BLUEPRINT = "blueprint"           # 算命分析
-    HEART_COMPASS = "heart_compass"   # Heart Compass 指导
-    DAILY_FORTUNE = "daily_fortune"   # 每日运势
+    BLUEPRINT = "blueprint"                    # 算命分析 (原有)
+    BLUEPRINT_QUICK = "blueprint_quick"        # 五行快速计算 (新增)
+    BLUEPRINT_COMPLETE = "blueprint_complete"  # 完整蓝图生成 (新增)
+    HEART_COMPASS = "heart_compass"            # Heart Compass 指导
+    DAILY_FORTUNE = "daily_fortune"            # 每日运势
 
 class PromptConfig:
     """提示词配置管理类"""
@@ -18,6 +20,8 @@ class PromptConfig:
     # 提示词类型到文件名的映射
     PROMPT_FILE_MAPPING = {
         PromptType.BLUEPRINT: "blueprint.md",
+        PromptType.BLUEPRINT_QUICK: "blueprint_quick.md",        # 新增
+        PromptType.BLUEPRINT_COMPLETE: "blueprint_complete.md",  # 新增
         PromptType.HEART_COMPASS: "heart_compass.md", 
         PromptType.DAILY_FORTUNE: "daily_fortune.md"
     }
@@ -25,6 +29,8 @@ class PromptConfig:
     # 提示词类型到解析函数的映射
     PARSER_FUNCTION_MAPPING = {
         PromptType.BLUEPRINT: "_parse_blueprint_response",
+        PromptType.BLUEPRINT_QUICK: "_parse_blueprint_quick_response",        # 新增
+        PromptType.BLUEPRINT_COMPLETE: "_parse_blueprint_complete_response",  # 新增
         PromptType.HEART_COMPASS: "_parse_heart_compass_response",
         PromptType.DAILY_FORTUNE: "_parse_daily_fortune_response"
     }
@@ -32,6 +38,8 @@ class PromptConfig:
     # 提示词类型到业务服务的映射
     SERVICE_MAPPING = {
         PromptType.BLUEPRINT: "blueprint_service",
+        PromptType.BLUEPRINT_QUICK: "blueprint_service",         # 新增：使用同一个服务
+        PromptType.BLUEPRINT_COMPLETE: "blueprint_service",      # 新增：使用同一个服务
         PromptType.HEART_COMPASS: "heart_compass_service",
         PromptType.DAILY_FORTUNE: "daily_fortune_service"
     }
@@ -39,6 +47,8 @@ class PromptConfig:
     # 提示词类型到API路由的映射
     API_ROUTE_MAPPING = {
         PromptType.BLUEPRINT: "/blueprint",
+        PromptType.BLUEPRINT_QUICK: "/blueprint/quick",          # 新增
+        PromptType.BLUEPRINT_COMPLETE: "/blueprint/complete",    # 新增
         PromptType.HEART_COMPASS: "/heart-compass",
         PromptType.DAILY_FORTUNE: "/daily-fortune"
     }
@@ -94,6 +104,16 @@ PROMPT_DESCRIPTIONS = {
         "name": "算命分析",
         "description": "基于用户出生信息生成八字排盘、五行分析和内在蓝图",
         "output_format": "结构化的算命结果，包含八字、五行、性格分析等"
+    },
+    PromptType.BLUEPRINT_QUICK: {
+        "name": "五行快速计算",
+        "description": "快速计算用户的五行元素分布，5-8秒内返回结果",
+        "output_format": "只包含五行数据的简化JSON格式"
+    },
+    PromptType.BLUEPRINT_COMPLETE: {
+        "name": "完整蓝图生成",
+        "description": "基于五行结果生成完整的个人特质分析报告",
+        "output_format": "包含核心本质、天生优势、成长挑战、生命曲线的完整报告"
     },
     PromptType.HEART_COMPASS: {
         "name": "Heart Compass 指导", 

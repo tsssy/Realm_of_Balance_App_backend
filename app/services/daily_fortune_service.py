@@ -177,8 +177,31 @@ class DailyFortuneService:
     
     def _parse_daily_fortune_ai_response(self, ai_content: str) -> Dict[str, Any]:
         """解析 AI 响应，构建结构化数据"""
-        # 这里应该实现具体的解析逻辑
-        # 简化实现，返回基础结构
+        # 优先解析 AI 返回的 JSON（支持纯 JSON / ```json 包裹 / 宽松提取）
+        try:
+            import json
+            text = ai_content.strip() if ai_content else ""
+
+            # 纯 JSON
+            if text.startswith("{"):
+                return json.loads(text)
+
+            # ```json 包裹
+            if "```json" in text:
+                start = text.find("```json") + len("```json")
+                end = text.find("```", start)
+                json_str = text[start:end].strip()
+                return json.loads(json_str)
+
+            # 宽松提取：第一个 '{' 到最后一个 '}'
+            if "{" in text and "}" in text and text.find("{") < text.rfind("}"):
+                loose = text[text.find("{"): text.rfind("}")+1]
+                return json.loads(loose)
+
+        except Exception as e:
+            logger.warning(f"DailyFortune 解析AI响应失败，使用降级结构。错误: {e}; 片段: {ai_content[:120] if ai_content else ''}")
+
+        # 解析失败时降级到旧结构，确保接口稳定
         return {
             "hexagram": {
                 "name": "晋卦",

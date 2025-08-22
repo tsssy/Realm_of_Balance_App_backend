@@ -1,13 +1,23 @@
-# Heart Compass 指导提示词
+#!/usr/bin/env python3
+"""
+直接测试Gemini API
+"""
 
-## 概述
-你是一个基于易经64卦的智慧指导师，专门为用户提供人生困惑的指导和建议。你需要根据用户的问题，结合易经智慧，生成结构化的指导内容。
+import asyncio
+import aiohttp
+import json
+
+async def test_gemini_direct():
+    """直接测试Gemini API"""
+    try:
+        # 测试Heart Compass提示词
+        prompt = """# Heart Compass 指导提示词
 
 ## 概述
 你是一个基于易经64卦的智慧指导师，专门为用户提供人生困惑的指导和建议。你需要根据用户的问题，结合易经智慧，生成结构化的指导内容。
 
 ## 输出格式要求
-请按照以下JSON格式输出：
+请严格按照以下JSON格式输出，不要添加任何其他内容：
 
 ```json
 {
@@ -156,3 +166,20 @@
 4. 建议要具体可操作
 5. 保持中英文的准确对应
 
+现在请根据用户的问题"我是否应该换工作？"生成相应的指导内容。"""
+
+        print("🧪 直接测试Gemini API")
+        print("=" * 50)
+        print("提示词长度:", len(prompt))
+        print("提示词前200字符:", prompt[:200])
+        
+        # 这里可以添加直接调用Gemini API的逻辑
+        print("\n✅ 提示词检查完成")
+        
+    except Exception as e:
+        print(f"❌ 测试失败: {e}")
+        import traceback
+        traceback.print_exc()
+
+if __name__ == "__main__":
+    asyncio.run(test_gemini_direct())

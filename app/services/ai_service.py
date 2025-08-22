@@ -33,9 +33,8 @@ class GeminiInteractionAPI:
             request_data = {
                 "contents": [{"role": "user", "parts": [{"text": prompt}]}],
                 "generationConfig": {
-                    "temperature": 0.7,
-                    "topP": 0.95,
-                    "maxOutputTokens": 8192  # 增加输出token限制
+                    "temperature": 0.5,
+                    "maxOutputTokens": 8192
                 }
             }
             
@@ -47,29 +46,42 @@ class GeminiInteractionAPI:
                 candidate = response_json['candidates'][0]
                 
                 # 检查是否有内容
-                if 'content' in candidate and 'parts' in candidate['content']:
-                    ai_response = candidate['content']['parts'][0]['text'].strip()
-                    return {
-                        "success": True,
-                        "message": ai_response,
-                        "timestamp": datetime.now().isoformat()
-                    }
-                
-                # 检查是否因为token限制而提前结束
-                if candidate.get('finishReason') == 'MAX_TOKENS':
-                    logger.warning("Gemini API 因token限制提前结束，尝试获取部分响应")
-                    # 尝试获取部分响应
-                    if 'content' in candidate and 'parts' in candidate['content']:
+                if 'content' in candidate and 'parts' in candidate['content'] and len(candidate['content']['parts']) > 0:
+                    # 检查是否有文本内容
+                    if 'text' in candidate['content']['parts'][0]:
                         ai_response = candidate['content']['parts'][0]['text'].strip()
-                        if ai_response:
+                        if ai_response:  # 确保文本不为空
                             return {
                                 "success": True,
                                 "message": ai_response,
                                 "timestamp": datetime.now().isoformat()
                             }
+                
+                # 检查是否因为token限制而提前结束
+                if candidate.get('finishReason') == 'MAX_TOKENS':
+                    logger.warning("Gemini API 因token限制提前结束，尝试获取部分响应")
+                    # 尝试获取部分响应
+                    if 'content' in candidate and 'parts' in candidate['content'] and len(candidate['content']['parts']) > 0:
+                        if 'text' in candidate['content']['parts'][0]:
+                            ai_response = candidate['content']['parts'][0]['text'].strip()
+                            if ai_response:
+                                return {
+                                    "success": True,
+                                    "message": ai_response,
+                                    "timestamp": datetime.now().isoformat()
+                                }
                     
                     # 如果没有部分响应，返回错误
                     raise Exception("API 响应因token限制提前结束，请简化提示词")
+                
+                # 检查是否是Think Mode响应（没有实际内容）
+                if candidate.get('finishReason') == 'STOP' and 'content' in candidate:
+                    content = candidate['content']
+                    # 检查是否有parts字段，如果没有就是Think Mode响应
+                    if 'parts' not in content or not content.get('parts'):
+                        # 这是Think Mode响应，没有实际内容
+                        logger.warning("Gemini API 返回Think Mode响应，没有实际内容")
+                        raise Exception("AI返回了思考过程但没有实际内容，请重试或检查提示词")
             
             # 如果没有找到预期的响应格式，记录响应内容并返回错误
             logger.error(f"Gemini API 响应格式异常: {response_json}")
@@ -210,6 +222,10 @@ class AIService:
                 # 如果提供了解析函数，则解析响应
                 if parse_response_func:
                     parsed_result = parse_response_func(ai_content)
+                    # 如果解析函数返回字符串，直接作为ai_content
+                    if isinstance(parsed_result, str):
+                        ai_content = parsed_result
+                        parsed_result = None
                 else:
                     parsed_result = {"raw_content": ai_content}
                 
@@ -249,6 +265,53 @@ class AIService:
             return {
                 "success": False,
                 "message": f"生成算命结果失败: {str(e)}"
+            }
+    
+    async def generate_blueprint_quick(self, user_profile: Dict[str, Any]) -> Dict[str, Any]:
+        """快速生成五行计算结果"""
+        try:
+            # 构建上下文
+            context = {
+                "gender": user_profile.get("gender"),
+                "birth_date": user_profile.get("birth_date"),
+                "birth_time": user_profile.get("birth_time"),
+                "birth_location": user_profile.get("birth_location")
+            }
+            
+            return await self.generate_with_prompt(
+                PromptType.BLUEPRINT_QUICK, 
+                context, 
+                self._parse_blueprint_quick_response
+            )
+        except Exception as e:
+            logger.error(f"快速生成五行结果失败: {e}")
+            return {
+                "success": False,
+                "message": f"快速生成五行结果失败: {str(e)}"
+            }
+    
+    async def generate_blueprint_complete(self, user_profile: Dict[str, Any], quick_result: Dict[str, Any]) -> Dict[str, Any]:
+        """基于五行结果生成完整蓝图"""
+        try:
+            # 构建上下文，包含五行结果
+            context = {
+                "gender": user_profile.get("gender"),
+                "birth_date": user_profile.get("birth_date"),
+                "birth_time": user_profile.get("birth_time"),
+                "birth_location": user_profile.get("birth_location"),
+                "quick_result": quick_result  # 添加五行结果
+            }
+            
+            return await self.generate_with_prompt(
+                PromptType.BLUEPRINT_COMPLETE, 
+                context, 
+                self._parse_blueprint_complete_response
+            )
+        except Exception as e:
+            logger.error(f"生成完整蓝图失败: {e}")
+            return {
+                "success": False,
+                "message": f"生成完整蓝图失败: {str(e)}"
             }
     
     async def seek_heart_compass_guidance(self, question: str, user_profile: Dict[str, Any]) -> Dict[str, Any]:
@@ -296,8 +359,8 @@ class AIService:
             "parsed_at": datetime.now().isoformat()
         }
     
-    def _parse_heart_compass_response(self, ai_content: str) -> Dict[str, Any]:
-        """解析 Heart Compass 响应"""
+    def _parse_blueprint_quick_response(self, ai_content: str) -> Dict[str, Any]:
+        """解析快速五行计算结果响应"""
         # 这里应该实现具体的解析逻辑
         # 简化实现，返回原始内容
         return {
@@ -305,11 +368,21 @@ class AIService:
             "parsed_at": datetime.now().isoformat()
         }
     
-    def _parse_daily_fortune_response(self, ai_content: str) -> Dict[str, Any]:
-        """解析每日运势响应"""
+    def _parse_blueprint_complete_response(self, ai_content: str) -> Dict[str, Any]:
+        """解析完整蓝图响应"""
         # 这里应该实现具体的解析逻辑
         # 简化实现，返回原始内容
         return {
             "raw_content": ai_content,
             "parsed_at": datetime.now().isoformat()
         }
+    
+    def _parse_heart_compass_response(self, ai_content: str) -> Dict[str, Any]:
+        """解析 Heart Compass 响应"""
+        # 直接返回AI内容，让业务服务进行解析
+        return ai_content
+    
+    def _parse_daily_fortune_response(self, ai_content: str) -> Dict[str, Any]:
+        """解析每日运势响应"""
+        # 直接返回AI内容，让业务服务进行解析
+        return ai_content

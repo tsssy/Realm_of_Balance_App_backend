@@ -150,3 +150,109 @@ async def delete_blueprint(
     except Exception as e:
         logger.error(f"删除算命结果失败: {e}")
         raise HTTPException(status_code=500, detail=str(e))
+
+@router.post("/quick", response_model=BlueprintResponse)
+async def generate_blueprint_quick(
+    request: BlueprintGenerateRequest,
+    blueprint_service: BlueprintService = Depends(get_blueprint_service),
+    user_service: UserService = Depends(get_user_service)
+):
+    """
+    快速生成五行计算结果
+    
+    - **user_id**: 用户ID
+    - **user_profile**: 用户信息
+    
+    返回五行计算结果，状态为 partial
+    """
+    try:
+        logger.info(f"快速生成用户 {request.user_id} 的五行结果")
+        
+        # 验证用户是否存在
+        user = await user_service.get_user_profile(request.user_id)
+        if not user:
+            raise HTTPException(status_code=404, detail="用户不存在")
+        
+        # 快速生成五行结果
+        blueprint_result = await blueprint_service.generate_blueprint_quick(
+            request.user_id, 
+            request.user_profile
+        )
+        
+        return BlueprintResponse(
+            success=True,
+            data=blueprint_result,
+            message="五行结果快速生成成功"
+        )
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"快速生成五行结果失败: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@router.post("/complete", response_model=BlueprintResponse)
+async def generate_blueprint_complete(
+    request: BlueprintGenerateRequest,
+    blueprint_service: BlueprintService = Depends(get_blueprint_service),
+    user_service: UserService = Depends(get_user_service)
+):
+    """
+    基于五行结果生成完整蓝图
+    
+    - **user_id**: 用户ID
+    - **user_profile**: 用户信息
+    
+    注意：需要先调用快速生成接口
+    """
+    try:
+        logger.info(f"生成用户 {request.user_id} 的完整蓝图")
+        
+        # 验证用户是否存在
+        user = await user_service.get_user_profile(request.user_id)
+        if not user:
+            raise HTTPException(status_code=404, detail="用户不存在")
+        
+        # 生成完整蓝图
+        blueprint_result = await blueprint_service.generate_blueprint_complete(
+            request.user_id, 
+            request.user_profile
+        )
+        
+        return BlueprintResponse(
+            success=True,
+            data=blueprint_result,
+            message="完整蓝图生成成功"
+        )
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"生成完整蓝图失败: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@router.get("/{user_id}/status")
+async def get_blueprint_status(
+    user_id: str,
+    blueprint_service: BlueprintService = Depends(get_blueprint_service)
+):
+    """
+    获取用户的蓝图生成状态
+    
+    - **user_id**: 用户ID
+    
+    返回生成状态和进度信息
+    """
+    try:
+        logger.info(f"获取用户 {user_id} 的蓝图生成状态")
+        
+        status_info = await blueprint_service.get_blueprint_status(user_id)
+        
+        return {
+            "success": True,
+            "data": status_info
+        }
+        
+    except Exception as e:
+        logger.error(f"获取蓝图状态失败: {e}")
+        raise HTTPException(status_code=500, detail=str(e))

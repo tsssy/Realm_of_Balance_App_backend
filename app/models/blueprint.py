@@ -99,11 +99,20 @@ class InnerBlueprint(BaseModel):
 class BlueprintResult(BaseDBModel):
     """算命结果模型"""
     user_id: str = Field(..., description="用户ID")
-    bazi: Bazi = Field(..., description="八字排盘")
-    elemental_profile: ElementalProfile = Field(..., description="五行分析")
-    core_analysis: CoreAnalysis = Field(..., description="核心分析")
-    inner_blueprint: InnerBlueprint = Field(..., description="内在蓝图")
-    ai_analysis: str = Field(..., description="AI 分析内容")
+    
+    # 新增字段：生成状态和任务ID
+    generation_status: str = Field("complete", description="生成状态: partial|complete")
+    task_id: Optional[str] = Field(None, description="后台任务ID")
+    
+    # 快速计算结果（可选）
+    quick_data: Optional[Dict[str, Any]] = Field(None, description="快速计算的五行数据")
+    
+    # 原有字段（现在都是可选的，支持部分生成）
+    bazi: Optional[Bazi] = Field(None, description="八字排盘")
+    elemental_profile: Optional[ElementalProfile] = Field(None, description="五行分析")
+    core_analysis: Optional[CoreAnalysis] = Field(None, description="核心分析")
+    inner_blueprint: Optional[InnerBlueprint] = Field(None, description="内在蓝图")
+    ai_analysis: Optional[str] = Field(None, description="AI 分析内容")
 
 class BlueprintGenerateRequest(BaseModel):
     """生成算命结果请求模型"""
