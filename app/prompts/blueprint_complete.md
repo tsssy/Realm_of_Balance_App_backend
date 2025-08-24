@@ -12,17 +12,7 @@
 
 **五行计算结果：**
 ```json
-{
-  "core_energy_field": {
-    "chart_data": [
-      {"axis": "金 | Metal", "value": ${metal_value}},
-      {"axis": "木 | Wood", "value": ${wood_value}},
-      {"axis": "水 | Water", "value": ${water_value}},
-      {"axis": "火 | Fire", "value": ${fire_value}},
-      {"axis": "土 | Earth", "value": ${earth_value}}
-    ]
-  }
-}
+${quick_result}
 ```
 
 ## 任务指令
