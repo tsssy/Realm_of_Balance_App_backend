@@ -418,7 +418,7 @@ class NewUserFlow {
       this.userData.birthTime = birthTimeData;
       this.currentStep = 'location_gender';
       this.showLocationGenderForm();
-    } catch (error) {
+  } catch (error) {
       console.error('处理出生时间失败:', error);
       this.showError('保存出生时间失败，请重试');
     }
@@ -470,10 +470,10 @@ class NewUserFlow {
         // 显示五行结果页面
         this.currentStep = 'elements_result';
         this.showElementsResult(quickResult.data);
-      } else {
+    } else {
         throw new Error(quickResult.message || '计算五行失败');
-      }
-    } catch (error) {
+    }
+  } catch (error) {
       console.error('计算五行失败:', error);
       this.showError('计算失败，请重试');
     }
@@ -497,10 +497,10 @@ class NewUserFlow {
         // 显示个人特质分析页面
         this.currentStep = 'personality_insights';
         this.showPersonalityInsights(completeResult.data);
-      } else {
+    } else {
         throw new Error(completeResult.message || '生成完整蓝图失败');
-      }
-    } catch (error) {
+    }
+  } catch (error) {
       console.error('生成完整蓝图失败:', error);
       this.showError('生成失败，请重试');
     }
@@ -892,14 +892,14 @@ const apiCallWithRetry = async (apiFunction, ...args) => {
   while (retryCount <= maxRetries) {
     try {
       return await apiFunction(...args);
-    } catch (error) {
+  } catch (error) {
       retryCount = await ErrorHandler.handleApiError(error, retryCount, maxRetries);
       
       if (retryCount > maxRetries) {
         ErrorHandler.showUserFriendlyError(error);
-        throw error;
-      }
-    }
+    throw error;
+  }
+}
   }
 };
 
@@ -1121,7 +1121,7 @@ const getHeartCompassGuidance = async (userId, question) => {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        user_id: userId,
+      user_id: userId,
         question: question
       })
     });
@@ -1300,10 +1300,10 @@ class HeartCompassPage {
       if (result.success) {
         this.currentQuestion = result.data;
         this.showGuidanceResult(result.data);
-      } else {
+    } else {
         throw new Error(result.message || '获取指导失败');
-      }
-    } catch (error) {
+    }
+  } catch (error) {
       console.error('获取Heart Compass指导失败:', error);
       this.showError('获取指导失败，请重试');
     } finally {
@@ -1397,10 +1397,10 @@ class HeartCompassPage {
       if (result.success) {
         this.currentQuestion = result.data;
         this.showGuidanceResult(result.data);
-      } else {
+    } else {
         throw new Error(result.message || '重新提问失败');
-      }
-    } catch (error) {
+    }
+  } catch (error) {
       console.error('重新提问失败:', error);
       this.showError('重新提问失败，请重试');
     } finally {
@@ -1446,8 +1446,8 @@ const generateDailyFortune = async (userId) => {
     });
     
     const result = await response.json();
-    return result;
-  } catch (error) {
+  return result;
+} catch (error) {
     console.error('生成每日运势失败:', error);
     throw error;
   }
@@ -1570,7 +1570,7 @@ class DailyFortunePage {
     } catch (error) {
       console.error('加载每日运势失败:', error);
       this.showError('加载运势失败，请重试');
-    } finally {
+  } finally {
       this.hideLoading();
     }
   }
@@ -1692,8 +1692,8 @@ const getUserBlueprint = async (userId) => {
     });
     
     const result = await response.json();
-    return result;
-  } catch (error) {
+  return result;
+} catch (error) {
     console.error('获取用户蓝图失败:', error);
     throw error;
   }
@@ -1796,7 +1796,7 @@ class PersonalBlueprintPage {
             <div class="element-info">
               <span class="element-symbol">${this.getElementSymbol(element)}</span>
               <span class="element-name">${this.getElementName(element)}</span>
-            </div>
+      </div>
             <div class="element-percentage">${data.strength}%</div>
             <div class="element-bar">
               <div class="bar-fill ${element}" style="width: ${data.strength}%"></div>
@@ -1849,14 +1849,14 @@ class PersonalBlueprintPage {
         <div class="radar-chart">
           <!-- 这里应该渲染雷达图 -->
           <canvas id="radar-chart" width="300" height="300"></canvas>
-        </div>
+            </div>
         <div class="element-breakdown">
           ${Object.entries(this.blueprintData.elemental_profile).slice(0, 3).map(([element, data]) => `
             <div class="element-progress">
               <span>${this.getElementName(element)}</span>
               <div class="progress-bar">
                 <div class="progress-fill" style="width: ${data.strength}%"></div>
-              </div>
+        </div>
               <span class="percentage">${data.strength}%</span>
             </div>
           `).join('')}
@@ -1869,7 +1869,7 @@ class PersonalBlueprintPage {
         <div class="line-chart">
           <!-- 这里应该渲染生命曲线图 -->
           <canvas id="life-energy-chart" width="300" height="200"></canvas>
-        </div>
+    </div>
       </div>
 
       <!-- 核心能量场 -->
@@ -1878,7 +1878,7 @@ class PersonalBlueprintPage {
         <p>${this.blueprintData.inner_blueprint.core_essence.description}</p>
         <div class="primary-strengths">
           <strong>Primary strengths:</strong> ${this.blueprintData.inner_blueprint.natural_strengths.strengths.slice(0, 3).join(', ')}
-        </div>
+    </div>
       </div>
 
       <!-- 成长挑战 -->
@@ -1898,13 +1898,13 @@ class PersonalBlueprintPage {
           <li><span class="bullet pink">●</span>Channel your Fire energy into creative projects</li>
           <li><span class="bullet gray">●</span>Establish consistent sleep and meal routines</li>
         </ul>
-      </div>
+    </div>
 
       <!-- 导航按钮 -->
       <div class="navigation-buttons">
         <button class="back-btn" id="back-btn">Back</button>
         <button class="explore-btn" id="explore-btn">Explore Heart Compass</button>
-      </div>
+  </div>
     `;
 
     // 绑定事件
@@ -2083,8 +2083,8 @@ class MainApp {
         }
       } else {
         throw new Error(result.message || '重新生成失败');
-      }
-    } catch (error) {
+    }
+  } catch (error) {
       console.error('重新生成个人蓝图失败:', error);
       this.showError('重新生成失败，请重试');
     } finally {
@@ -2095,12 +2095,12 @@ class MainApp {
   showRegeneratingPage() {
     // 显示重新生成中的页面
     const container = document.getElementById('page-content');
-    container.innerHTML = `
+  container.innerHTML = `
       <div class="regenerating-page">
         <div class="loading-spinner"></div>
         <h3>正在重新生成您的个人蓝图...</h3>
         <p>这可能需要几分钟时间，请耐心等待</p>
-      </div>
+    </div>
     `;
   }
 

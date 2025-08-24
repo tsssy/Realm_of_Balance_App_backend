@@ -38,18 +38,38 @@ class GeminiInteractionAPI:
                 }
             }
             
+            # 记录发送给Gemini的完整数据
+            logger.info(f"=== 向Gemini发送数据开始 ===")
+            logger.info(f"完整提示词内容: {prompt}")
+            logger.info(f"请求数据: {request_data}")
+            logger.info(f"=== 向Gemini发送数据结束 ===")
+            
             # 发送 API 请求（包含重试机制）
             response_json = await self._make_api_request(request_data)
+            
+            # 记录Gemini的完整响应
+            logger.info(f"=== Gemini完整响应开始 ===")
+            logger.info(f"原始响应JSON: {response_json}")
+            logger.info(f"=== Gemini完整响应结束 ===")
             
             # 解析响应
             if 'candidates' in response_json and len(response_json['candidates']) > 0:
                 candidate = response_json['candidates'][0]
+                
+                # 记录候选者信息
+                logger.info(f"=== Gemini响应候选者信息 ===")
+                logger.info(f"候选者数据: {candidate}")
+                logger.info(f"完成原因: {candidate.get('finishReason')}")
+                logger.info(f"=== Gemini响应候选者信息结束 ===")
                 
                 # 检查是否有内容
                 if 'content' in candidate and 'parts' in candidate['content'] and len(candidate['content']['parts']) > 0:
                     # 检查是否有文本内容
                     if 'text' in candidate['content']['parts'][0]:
                         ai_response = candidate['content']['parts'][0]['text'].strip()
+                        logger.info(f"=== 提取的AI响应文本 ===")
+                        logger.info(f"AI响应内容: {ai_response}")
+                        logger.info(f"=== 提取的AI响应文本结束 ===")
                         if ai_response:  # 确保文本不为空
                             return {
                                 "success": True,
@@ -84,11 +104,15 @@ class GeminiInteractionAPI:
                         raise Exception("AI返回了思考过程但没有实际内容，请重试或检查提示词")
             
             # 如果没有找到预期的响应格式，记录响应内容并返回错误
-            logger.error(f"Gemini API 响应格式异常: {response_json}")
+            logger.error(f"=== Gemini响应格式异常 ===")
+            logger.error(f"响应格式异常详情: {response_json}")
+            logger.error(f"=== Gemini响应格式异常结束 ===")
             raise Exception(f"API 响应格式错误: {response_json}")
             
         except Exception as e:
-            logger.error(f'Gemini API 调用失败: {e}')
+            logger.error(f'=== Gemini API 调用失败 ===')
+            logger.error(f'错误详情: {e}')
+            logger.error(f'=== Gemini API 调用失败结束 ===')
             return await self.get_fallback_response()
     
     async def _make_api_request(self, request_data: dict) -> dict:
@@ -96,10 +120,18 @@ class GeminiInteractionAPI:
         full_url = f"{self.api_url}?key={self.api_key}"
         headers = {"Content-Type": "application/json"}
         
+        # 记录API请求详情
+        logger.info(f"=== Gemini API请求详情 ===")
+        logger.info(f"请求URL: {full_url}")
+        logger.info(f"请求头: {headers}")
+        logger.info(f"超时设置: {self.timeout}秒")
+        logger.info(f"=== Gemini API请求详情结束 ===")
+        
         # 重试机制
         retry_count = 0
         while retry_count < self.max_retries:
             try:
+                logger.info(f"=== 第{retry_count + 1}次API请求 ===")
                 response = requests.post(
                     full_url, 
                     json=request_data, 
@@ -107,12 +139,20 @@ class GeminiInteractionAPI:
                     timeout=self.timeout
                 )
                 
+                logger.info(f"HTTP状态码: {response.status_code}")
+                logger.info(f"响应头: {dict(response.headers)}")
+                logger.info(f"=== 第{retry_count + 1}次API请求结束 ===")
+                
                 if response.status_code == 200:
                     return response.json()
                 else:
                     response.raise_for_status()
                     
             except Exception as e:
+                logger.error(f"=== 第{retry_count + 1}次API请求失败 ===")
+                logger.error(f"错误详情: {e}")
+                logger.error(f"=== 第{retry_count + 1}次API请求失败结束 ===")
+                
                 retry_count += 1
                 if retry_count >= self.max_retries:
                     raise Exception(f"Gemini API 调用最终失败，已达到最大重试次数 {self.max_retries}")
@@ -211,7 +251,11 @@ class AIService:
                 raise Exception(f"无法获取 {prompt_type.value} 提示词")
             
             # 记录日志
-            logger.info(f"使用提示词类型: {prompt_type.value}, 文件: {PromptConfig.get_prompt_filename(prompt_type)}")
+            logger.info(f"=== 提示词准备完成 ===")
+            logger.info(f"提示词类型: {prompt_type.value}")
+            logger.info(f"提示词文件: {PromptConfig.get_prompt_filename(prompt_type)}")
+            logger.info(f"最终提示词内容: {prompt[:500]}..." if len(prompt) > 500 else f"最终提示词内容: {prompt}")
+            logger.info(f"=== 提示词准备完成结束 ===")
             
             # 调用 AI 服务
             response = await self.gemini_api.send_message_to_ai(prompt, context)

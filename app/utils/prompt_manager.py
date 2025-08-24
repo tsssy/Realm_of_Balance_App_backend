@@ -21,17 +21,29 @@ class PromptManager:
         Returns:
             str: 文件内容
         """
+        print(f"=== 读取提示词文件 ===")
+        print(f"文件名: {filename}")
+        print(f"缓存中是否存在: {filename in self._cache}")
+        
         if filename in self._cache:
+            print(f"从缓存返回: {self._cache[filename][:100]}...")
             return self._cache[filename]
         
         file_path = self.prompts_dir / filename
+        print(f"文件路径: {file_path}")
+        print(f"文件是否存在: {file_path.exists()}")
+        
         if not file_path.exists():
+            print(f"文件不存在: {file_path}")
             return ""
         
         try:
             with open(file_path, 'r', encoding='utf-8') as f:
                 content = f.read().strip()
+                print(f"文件内容长度: {len(content)}")
+                print(f"文件内容前100字符: {content[:100]}")
                 self._cache[filename] = content
+                print(f"已缓存到: {filename}")
                 return content
         except Exception as e:
             print(f"读取 prompt 文件 {filename} 失败: {e}")
@@ -68,12 +80,20 @@ class PromptManager:
         Returns:
             str: 完整的系统提示词
         """
+        print(f"=== 获取提示词文件 ===")
+        print(f"文件名: {filename}")
+        print(f"上下文信息: {context}")
+        
         base_prompt = self._read_prompt_file(filename)
+        
+        print(f"原始提示词内容: {base_prompt[:200]}..." if len(base_prompt) > 200 else f"原始提示词内容: {base_prompt}")
         
         # 如果有上下文信息，进行动态替换
         if context and base_prompt:
             base_prompt = self._replace_placeholders(base_prompt, context)
+            print(f"替换后的提示词内容: {base_prompt[:200]}..." if len(base_prompt) > 200 else f"替换后的提示词内容: {base_prompt}")
         
+        print(f"=== 获取提示词文件结束 ===")
         return base_prompt
     
     def _replace_placeholders(self, prompt: str, context: Dict[str, Any]) -> str:
@@ -87,10 +107,24 @@ class PromptManager:
         Returns:
             str: 替换后的提示词
         """
+        print(f"=== 开始替换占位符 ===")
+        print(f"原始提示词长度: {len(prompt)}")
+        print(f"上下文信息: {context}")
+        
         try:
             for key, value in context.items():
                 placeholder = f"${{{key}}}"
-                prompt = prompt.replace(placeholder, str(value))
+                print(f"查找占位符: {placeholder}")
+                print(f"替换值: {value}")
+                
+                if placeholder in prompt:
+                    prompt = prompt.replace(placeholder, str(value))
+                    print(f"占位符 {placeholder} 替换成功")
+                else:
+                    print(f"占位符 {placeholder} 在提示词中未找到")
+            
+            print(f"替换后提示词长度: {len(prompt)}")
+            print(f"=== 占位符替换完成 ===")
             return prompt
         except Exception as e:
             print(f"替换占位符失败: {e}")

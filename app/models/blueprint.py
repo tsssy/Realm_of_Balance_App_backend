@@ -18,7 +18,7 @@ class Bazi(BaseModel):
 
 class ElementalStrength(BaseModel):
     """五行强度模型"""
-    strength: int = Field(..., ge=0, le=100, description="强度值 0-100")
+    strength: float = Field(..., ge=0, le=100, description="强度值 0-100")
     characteristics: List[str] = Field(..., description="特征描述")
 
 class ElementalProfile(BaseModel):
@@ -45,7 +45,7 @@ class CoreAnalysis(BaseModel):
 class ChartDataPoint(BaseModel):
     """图表数据点模型"""
     axis: str = Field(..., description="坐标轴名称")
-    value: int = Field(..., ge=0, le=100, description="数值 0-100")
+    value: float = Field(..., ge=0, le=100, description="数值 0-100")
 
 class CoreEnergyField(BaseModel):
     """核心能量场模型"""
@@ -77,7 +77,7 @@ class GrowthAreas(BaseModel):
 class LifeJourneyDataPoint(BaseModel):
     """生命曲线数据点模型"""
     year: int = Field(..., description="年份")
-    energy_level: int = Field(..., ge=0, le=100, description="能量值 0-100")
+    energy_level: float = Field(..., ge=0, le=100, description="能量值 0-100")
     is_turning_point: bool = Field(..., description="是否为转折点")
     icon_id: str = Field(..., description="图标标识")
     event_description: str = Field(..., description="年度描述")

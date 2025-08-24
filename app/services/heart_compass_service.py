@@ -24,14 +24,31 @@ class HeartCompassService:
     async def seek_guidance(self, user_id: str, question: str, user_profile: dict):
         """获取指导 - 自动版本化缓存"""
         try:
+            # 记录用户请求信息
+            logger.info(f"=== Heart Compass 用户请求信息 ===")
+            logger.info(f"用户ID: {user_id}")
+            logger.info(f"用户问题: {question}")
+            logger.info(f"用户档案: {user_profile}")
+            logger.info(f"=== Heart Compass 用户请求信息结束 ===")
+            
             # 调用 AI 服务获取指导
             result = await self.ai_service.seek_heart_compass_guidance(question, user_profile)
+            
+            # 记录AI服务返回结果
+            logger.info(f"=== AI服务返回结果 ===")
+            logger.info(f"AI服务结果: {result}")
+            logger.info(f"=== AI服务返回结果结束 ===")
             
             if not result.get("success"):
                 raise Exception(f"AI 生成失败: {result.get('message')}")
             
             # 解析 AI 响应，构建结构化数据
             guidance_data = self._parse_heart_compass_ai_response(result.get("ai_content", ""))
+            
+            # 记录解析后的指导数据
+            logger.info(f"=== 解析后的指导数据 ===")
+            logger.info(f"解析结果: {guidance_data}")
+            logger.info(f"=== 解析后的指导数据结束 ===")
             
             # 构建完整的指导记录
             guidance_record = HeartCompassRecord(
@@ -79,13 +96,23 @@ class HeartCompassService:
                     }
             
             # 调用 AI 服务获取深入指导
-            result = await self.ai_service.seek_heart_compass_guidance(question, context)
+            result = await self.ai_service.seek_heart_compass_guidance(question, user_profile)
+            
+            # 记录AI服务返回结果（重新提问）
+            logger.info(f"=== AI服务返回结果（重新提问）===")
+            logger.info(f"AI服务结果: {result}")
+            logger.info(f"=== AI服务返回结果（重新提问）结束 ===")
             
             if not result.get("success"):
                 raise Exception(f"AI 生成失败: {result.get('message')}")
             
             # 解析 AI 响应，构建结构化数据
             guidance_data = self._parse_heart_compass_ai_response(result.get("ai_content", ""))
+            
+            # 记录解析后的指导数据（重新提问）
+            logger.info(f"=== 解析后的指导数据（重新提问）===")
+            logger.info(f"解析结果: {guidance_data}")
+            logger.info(f"=== 解析后的指导数据（重新提问）结束 ===")
             
             # 构建完整的指导记录
             guidance_record = HeartCompassRecord(
@@ -190,6 +217,10 @@ class HeartCompassService:
     
     def _parse_heart_compass_ai_response(self, ai_content: str) -> Dict[str, Any]:
         """解析 AI 响应，构建结构化数据"""
+        logger.info(f"=== 开始解析AI响应 ===")
+        logger.info(f"AI原始内容长度: {len(ai_content) if ai_content else 0}")
+        logger.info(f"AI原始内容前200字符: {ai_content[:200] if ai_content else 'None'}")
+        
         # 优先解析 AI 返回的 JSON（支持纯 JSON 或 ```json 包裹的格式）
         try:
             import json
@@ -197,25 +228,42 @@ class HeartCompassService:
 
             # 纯 JSON
             if text.startswith("{"):
-                return json.loads(text)
+                logger.info("检测到纯JSON格式，直接解析")
+                result = json.loads(text)
+                logger.info(f"JSON解析成功: {result}")
+                return result
 
             # ```json 包裹
             if "```json" in text:
+                logger.info("检测到```json包裹格式，提取JSON内容")
                 start = text.find("```json") + len("```json")
                 end = text.find("```", start)
                 json_str = text[start:end].strip()
-                return json.loads(json_str)
+                logger.info(f"提取的JSON字符串: {json_str}")
+                result = json.loads(json_str)
+                logger.info(f"JSON解析成功: {result}")
+                return result
 
             # 宽松提取：寻找第一个 '{' 到最后一个 '}' 之间的片段
             if "{" in text and "}" in text and text.find("{") < text.rfind("}"):
+                logger.info("检测到JSON片段，进行宽松提取")
                 loose = text[text.find("{"): text.rfind("}")+1]
-                return json.loads(loose)
+                logger.info(f"宽松提取的JSON片段: {loose}")
+                result = json.loads(loose)
+                logger.info(f"JSON解析成功: {result}")
+                return result
 
         except Exception as e:
-            logger.warning(f"HeartCompass 解析AI响应失败，进行智能转换。错误: {e}; 片段: {ai_content[:120] if ai_content else ''}")
+            logger.warning(f"=== JSON解析失败 ===")
+            logger.warning(f"错误详情: {e}")
+            logger.warning(f"AI内容片段: {ai_content[:120] if ai_content else ''}")
+            logger.warning(f"=== JSON解析失败结束 ===")
 
         # 智能转换：从AI的原始输出中提取有用信息
-        return self._smart_convert_ai_response(ai_content)
+        logger.info("JSON解析失败，开始智能转换")
+        result = self._smart_convert_ai_response(ai_content)
+        logger.info(f"智能转换完成: {result}")
+        return result
     
     def _smart_convert_ai_response(self, ai_content: str) -> Dict[str, Any]:
         """智能转换AI响应，从各种格式中提取有用信息"""
