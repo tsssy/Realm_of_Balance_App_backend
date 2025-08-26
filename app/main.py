@@ -44,10 +44,30 @@ app = FastAPI(
 )
 
 # 配置 CORS
+# app.add_middleware(
+#     CORSMiddleware,
+#     allow_origins=["*"],  # 生产环境中应该限制具体域名
+#     allow_credentials=True,
+#     allow_methods=["*"],
+#     allow_headers=["*"],
+# )
+
+# 新的 CORS 白名单配置（移动端兼容更好）
+# 说明：
+# 1) 明确列出允许的来源，避免 allow_credentials 与 '*' 的冲突
+# 2) 暂时关闭 allow_credentials（当前未使用带凭据请求）；若后续需要，保持白名单且前后端同步开启
+# 3) 保留允许的方法与头，确保预检请求（OPTIONS）正常通过
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # 生产环境中应该限制具体域名
-    allow_credentials=True,
+    allow_origins=[
+        "http://localhost:3000",        # 本地开发
+        "http://localhost:3001",        # 本地备选端口
+        "http://127.0.0.1:3000",
+        "http://127.0.0.1:3001",
+        "http://183.173.136.51:3000",   # 服务器前端（生产/内网）
+        "http://183.173.136.51:3001",
+    ],
+    allow_credentials=False,             # 先关闭凭据，避免移动端严格策略拦截
     allow_methods=["*"],
     allow_headers=["*"],
 )

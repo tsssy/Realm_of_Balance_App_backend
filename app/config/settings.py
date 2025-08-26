@@ -51,7 +51,7 @@ class Settings(BaseSettings):
     REDIS_URL: Optional[str] = None
     
     # 服务配置
-    PORT: int = 8000
+    PORT: int = 8080  # 改为8080端口，提高移动网络兼容性
     HOST: str = "0.0.0.0"
     
     # 日志配置
