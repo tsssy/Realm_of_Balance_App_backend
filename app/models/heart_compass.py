@@ -14,8 +14,8 @@ class Hexagram(BaseHexagram):
     code: str = Field(..., description="卦序 (如 '1')")
     focus_yao: FocusYao = Field(..., description="焦点爻辞")
 
-class DialogueFlow(BaseModel):
-    """对话流模型"""
+class Insight(BaseModel):
+    """洞察模型（原 dialogue_flow）"""
     revelation: str = Field(..., description="启示 - 短诗或箴言")
     analysis: str = Field(..., description="分析 - 基于象辞的处境分析")
     guidance: str = Field(..., description="指引 - 行动方向或心态建议")
@@ -35,9 +35,9 @@ class ActionGuide(BaseModel):
     supporting_actions: List[str] = Field(..., description="支持行动")
     inspirational_message: str = Field(..., description="激励话语")
 
-class DecisionProtocol(BaseModel):
-    """决策协议模型"""
-    title: str = Field(..., description="固定标题")
+class Summary(BaseModel):
+    """总结模型（原 decision_protocol）"""
+    title: str = Field(..., description="固定标题，应为 'Summary'")
     situation_code: str = Field(..., description="情境代码 (如 '乾卦 (#1)')")
     core_strategy: str = Field(..., description="核心策略 (四字短语)")
     action_guide: List[str] = Field(..., description="行动指南 (2-3条具体建议)")
@@ -47,10 +47,10 @@ class HeartCompassRecord(BaseDBModel):
     user_id: str = Field(..., description="关联用户ID")
     question: str = Field(..., description="用户问题/困惑文本")
     hexagram: Hexagram = Field(..., description="对应的卦象信息")
-    dialogue_flow: DialogueFlow = Field(..., description="对话流 (四个环节)")
+    insight: Insight = Field(..., description="洞察 (四个环节)")
     deep_wisdom: DeepWisdom = Field(..., description="深层智慧")
     action_guide: ActionGuide = Field(..., description="行动指南")
-    decision_protocol: DecisionProtocol = Field(..., description="决策协议")
+    summary: Summary = Field(..., description="总结")
     ai_generated: str = Field(..., description="Gemini AI 生成的完整指导")
 
 class HeartCompassRequest(BaseModel):

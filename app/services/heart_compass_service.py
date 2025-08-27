@@ -50,6 +50,24 @@ class HeartCompassService:
             logger.info(f"解析结果: {guidance_data}")
             logger.info(f"=== 解析后的指导数据结束 ===")
             
+            # 字段兼容：旧字段名转换为新字段名
+            if "dialogue_flow" in guidance_data and "insight" not in guidance_data:
+                guidance_data["insight"] = guidance_data.pop("dialogue_flow")
+            if "decision_protocol" in guidance_data and "summary" not in guidance_data:
+                _dp = guidance_data.pop("decision_protocol")
+                if isinstance(_dp, dict):
+                    _dp["title"] = "Summary"
+                guidance_data["summary"] = _dp
+
+            # 字段兼容：旧字段名转换为新字段名
+            if "dialogue_flow" in guidance_data and "insight" not in guidance_data:
+                guidance_data["insight"] = guidance_data.pop("dialogue_flow")
+            if "decision_protocol" in guidance_data and "summary" not in guidance_data:
+                _dp = guidance_data.pop("decision_protocol")
+                if isinstance(_dp, dict):
+                    _dp["title"] = "Summary"
+                guidance_data["summary"] = _dp
+
             # 构建完整的指导记录
             guidance_record = HeartCompassRecord(
                 user_id=user_id,
@@ -92,7 +110,7 @@ class HeartCompassService:
                     context["previous_guidance"] = {
                         "hexagram": previous_guidance.hexagram,
                         "question": previous_guidance.question,
-                        "guidance_summary": previous_guidance.decision_protocol.core_strategy
+                        "guidance_summary": previous_guidance.summary.core_strategy
                     }
             
             # 调用 AI 服务获取深入指导

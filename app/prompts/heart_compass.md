@@ -29,7 +29,7 @@ ${question}
       "yao_text": "爻辞内容"
     }
   },
-  "dialogue_flow": {
+  "insight": {
     "revelation": "启示内容",
     "analysis": "分析内容",
     "guidance": "指引内容",
@@ -47,8 +47,8 @@ ${question}
     "supporting_actions": ["支持行动1", "支持行动2"],
     "inspirational_message": "激励话语"
   },
-  "decision_protocol": {
-    "title": "决策协议 | Decision Protocol",
+  "summary": {
+    "title": "Summary",
     "situation_code": "情境代码",
     "core_strategy": "核心策略",
     "action_guide": ["行动指南1", "行动指南2", "行动指南3"]
@@ -67,7 +67,7 @@ ${question}
 - **image_text**: 象辞，解释卦象含义
 - **focus_yao**: 焦点爻辞，选择最相关的爻位
 
-### 2. 对话流 (dialogue_flow)
+### 2. 洞察 (insight)
 - **revelation**: 启示，用优美的语言表达核心智慧
 - **analysis**: 分析，基于象辞分析用户当前处境
 - **guidance**: 指引，提供具体的行动方向或心态建议
@@ -85,8 +85,8 @@ ${question}
 - **supporting_actions**: 2条支持性行动建议
 - **inspirational_message**: 激励话语，鼓励用户行动
 
-### 5. 决策协议 (decision_protocol)
-- **title**: 固定为"决策协议 | Decision Protocol"
+### 5. 总结 (summary)
+- **title**: 固定为"Summary"
 - **situation_code**: 情境代码，如"乾卦 (#1)"
 - **core_strategy**: 核心策略，四字短语
 - **action_guide**: 3条具体的行动指南
@@ -117,7 +117,7 @@ ${question}
       "yao_text": "九二：包荒，用冯河，不遐遗，朋亡，得尚于中行。"
     }
   },
-  "dialogue_flow": {
+  "insight": {
     "revelation": "天地交泰，万物和谐，平衡之道在于顺应自然。",
     "analysis": "你目前面临工作与生活的平衡挑战，这正是需要调和阴阳的时刻。",
     "guidance": "学会在工作与生活之间找到自然的节奏，不要强求完美。",
@@ -141,8 +141,8 @@ ${question}
     ],
     "inspirational_message": "Balance is not about perfect equality, but about harmony and flow."
   },
-  "decision_protocol": {
-    "title": "决策协议 | Decision Protocol",
+  "summary": {
+    "title": "Summary",
     "situation_code": "泰卦 (#11)",
     "core_strategy": "和谐平衡，顺应自然",
     "action_guide": [
@@ -160,5 +160,5 @@ ${question}
 2. 卦象选择要准确，符合易经传统
 3. 语言要温暖、智慧、实用
 4. 建议要具体可操作
-5. 保持中英文的准确对应
+5. 确保输出的所有内容是英文。这非常重要
 
