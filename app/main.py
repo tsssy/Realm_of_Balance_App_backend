@@ -46,9 +46,15 @@ app = FastAPI(
 # 配置 CORS
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # 生产环境中应该限制具体域名
+    allow_origins=[
+        "https://mystelleastro.com",         # 新的主域名
+        "https://www.mystelleastro.com",     # 新域名的www版本
+        "https://realm.lovetapoversea.xyz",  # 使用子域名
+        "https://8.216.32.239",              # HTTPS IP访问 (主要)
+        "http://localhost:3000",             # 开发环境
+    ],
     allow_credentials=True,
-    allow_methods=["*"],
+    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allow_headers=["*"],
 )
 

@@ -13,9 +13,9 @@ class Settings(BaseSettings):
     # MongoDB 配置
     MONGODB_URL: str = "mongodb://localhost:27017"
     MONGODB_DB_NAME: str = "realm_of_balance"
-    MONGODB_USERNAME: Optional[str] = None
-    MONGODB_PASSWORD: Optional[str] = None
-    MONGODB_AUTH_SOURCE: Optional[str] = None
+    MONGODB_USERNAME: Optional[str] = os.getenv("MONGODB_USERNAME", "root")
+    MONGODB_PASSWORD: Optional[str] = os.getenv("MONGODB_PASSWORD", "Awr20020311")
+    MONGODB_AUTH_SOURCE: Optional[str] = os.getenv("MONGODB_AUTH_SOURCE", "admin")
     
     # Gemini API 配置
     GEMINI_API_KEY: str = os.getenv("GEMINI_API_KEY", "AIzaSyC3H7E-QNYloxM7jHcLcL9FHEYhqvhoF5M")
