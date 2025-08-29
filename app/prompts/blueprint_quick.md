@@ -19,8 +19,8 @@
 ```json
 {
   "core_energy_field": {
-    "title": "核心能量场 | Elemental Composition",
-    "description": "这是构成你内在世界的五种基本能量。",
+    "title": "Elemental Composition",
+    "description": "These are the five fundamental energies that form your inner world.",
     "chart_data": [
       {"axis": "金 | Metal", "value": 数值},
       {"axis": "木 | Wood", "value": 数值},
@@ -36,3 +36,4 @@
 - 只输出五行计算，不要其他内容
 - 数值范围：0-100
 - 严格按照JSON格式
+- 确保输出的所有内容是英文。这非常重要

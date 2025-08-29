@@ -45,23 +45,23 @@ ${quick_result}
 ```json
 {
   "core_essence": {
-    "title": "核心本质 | Core Essence",
+    "title": "Core Essence",
     "description": "基于主导元素的性格解读"
   },
   "natural_strengths": {
-    "title": "天生优势 | Natural Strengths",
+    "title": "Natural Strengths",
     "strengths": ["优点1", "优点2", "优点3"]
   },
   "growth_areas": {
-    "title": "成长挑战 | Growth Areas",
+    "title": "Growth Areas",
     "analysis": "能量短板分析",
     "balance_path": {
-      "title": "平衡之道 | Path to Balance",
+      "title": "Path to Balance",
       "suggestions": ["建议1", "建议2", "建议3"]
     }
   },
   "life_journey_curve": {
-    "title": "生命曲线 | Life Journey Forecast",
+    "title": "Life Journey Forecast",
     "description": "未来数年你的能量将经历自然波动。",
     "chart_data": [
       {
@@ -83,3 +83,4 @@ ${quick_result}
 - 建议要具体可操作
 - 严格按照JSON格式输出
 - 不要重复输出五行数据，只生成其他内容
+- 确保输出的所有内容是英文。这非常重要
