@@ -7,6 +7,7 @@ from contextlib import asynccontextmanager
 from app.config import settings
 from app.core.database import Database
 from app.api.v1 import user, blueprint, heart_compass, daily_fortune, admin
+from app.api.v2 import openai_blueprint, kimi_blueprint, kimi_heart_compass, kimi_daily_fortune
 from app.utils.logger import MyLogger
 
 logger = MyLogger("main")
@@ -87,12 +88,18 @@ async def health_check():
         "version": settings.VERSION
     }
 
-# 注册路由
+# 注册V1路由
 app.include_router(user.router, prefix=settings.API_V1_STR)
 app.include_router(blueprint.router, prefix=settings.API_V1_STR)
 app.include_router(heart_compass.router, prefix=settings.API_V1_STR)
 app.include_router(daily_fortune.router, prefix=settings.API_V1_STR)
 app.include_router(admin.router, prefix=settings.API_V1_STR)
+
+# 注册V2路由 (AI模型替代版本)
+app.include_router(openai_blueprint.router, prefix="/api/v2")
+app.include_router(kimi_blueprint.router, prefix="/api/v2")
+app.include_router(kimi_heart_compass.router, prefix="/api/v2")
+app.include_router(kimi_daily_fortune.router, prefix="/api/v2")
 
 # 根路径
 @app.get("/")

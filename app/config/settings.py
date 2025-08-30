@@ -32,13 +32,18 @@ class Settings(BaseSettings):
     GEMINI_API_URL: str = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent"
     GEMINI_MODEL_NAME: str = "gemini-2.5-flash"
     
+    # OpenAI API 配置
+    OPENAI_API_KEY: str = os.getenv("OPENAI_API_KEY", "")  # 从环境变量读取，无默认值
+    OPENAI_API_URL: str = "https://api.openai.com/v1/chat/completions"
+    OPENAI_MODEL_NAME: str = "gpt-4o-mini"
+    
     # Kimi API 配置（Moonshot）
-    KIMI_API_KEY: str = os.getenv("KIMI_API_KEY", "sk-k6FqWbmEJJa9TKxK39fjCEflSG7JraFGlK2BnhAYcaHi89PJ")
+    KIMI_API_KEY: str = os.getenv("KIMI_API_KEY", "")
     KIMI_API_URL: str = "https://api.moonshot.cn/v1/chat/completions"
     KIMI_MODEL_NAME: str = "moonshot-v1-8k"
     
     # 豆包API配置（保留，但暂时不使用）
-    DOUBAO_API_KEY: str = os.getenv("DOUBAO_API_KEY", "1e65c3d6-b827-4706-9fa8-93732bed0a8a")
+    DOUBAO_API_KEY: str = os.getenv("DOUBAO_API_KEY", "")
     DOUBAO_API_URL: str = "https://api.doubao.com/v1/chat/completions"
     DOUBAO_MODEL_NAME: str = "doubao-seed-1.6-250615"
     
@@ -61,9 +66,10 @@ class Settings(BaseSettings):
     REDIS_URL: Optional[str] = None
     
     # 服务配置 - 本地开发环境
-    PORT: int = 8000
+    PORT: int = 8001  # 使用8001端口避免与Cursor冲突
     HOST: str = "localhost"  # 本地开发使用localhost
     # 生产环境配置（注释保留）
+    # PORT: int = 8000
     # HOST: str = "0.0.0.0"
     
     # 日志配置

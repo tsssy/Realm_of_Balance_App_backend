@@ -16,12 +16,12 @@ def main():
     # 设置环境变量
     os.environ['ENVIRONMENT'] = 'local'
     os.environ['HOST'] = 'localhost'
-    os.environ['PORT'] = '8000'
+    os.environ['PORT'] = '8001'
     os.environ['MONGODB_DB_NAME'] = 'realm_of_balance_local'
     
     print("🚀 启动本地开发环境...")
-    print("📍 后端服务: http://localhost:8000")
-    print("📍 API文档: http://localhost:8000/docs")
+    print("📍 后端服务: http://localhost:8001")
+    print("📍 API文档: http://localhost:8001/docs")
     print("📍 数据库: realm_of_balance_local")
     print("=" * 50)
     
@@ -31,7 +31,7 @@ def main():
             sys.executable, '-m', 'uvicorn',
             'app.main:app',
             '--host', 'localhost',
-            '--port', '8000',
+            '--port', '8001',
             '--reload',
             '--log-level', 'info'
         ], check=True)
