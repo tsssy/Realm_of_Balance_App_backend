@@ -10,12 +10,22 @@ class Settings(BaseSettings):
     VERSION: str = "1.0.0"
     API_V1_STR: str = "/api/v1"
     
-    # MongoDB 配置
+    # 环境标识 - 本地开发环境
+    ENVIRONMENT: str = os.getenv("ENVIRONMENT", "local")  # local, production
+    
+    # MongoDB 配置 - 本地开发环境
     MONGODB_URL: str = "mongodb://localhost:27017"
-    MONGODB_DB_NAME: str = "realm_of_balance"
-    MONGODB_USERNAME: Optional[str] = os.getenv("MONGODB_USERNAME", "root")
-    MONGODB_PASSWORD: Optional[str] = os.getenv("MONGODB_PASSWORD", "Awr20020311")
-    MONGODB_AUTH_SOURCE: Optional[str] = os.getenv("MONGODB_AUTH_SOURCE", "admin")
+    MONGODB_DB_NAME: str = "realm_of_balance_local"  # 本地开发数据库名
+    MONGODB_USERNAME: Optional[str] = os.getenv("MONGODB_USERNAME", None)  # 本地无需认证
+    MONGODB_PASSWORD: Optional[str] = os.getenv("MONGODB_PASSWORD", None)  # 本地无需认证
+    MONGODB_AUTH_SOURCE: Optional[str] = os.getenv("MONGODB_AUTH_SOURCE", None)  # 本地无需认证
+    
+    # 生产环境MongoDB配置（注释保留）
+    # MONGODB_URL: str = "mongodb://localhost:27017"
+    # MONGODB_DB_NAME: str = "realm_of_balance"
+    # MONGODB_USERNAME: Optional[str] = os.getenv("MONGODB_USERNAME", "root")
+    # MONGODB_PASSWORD: Optional[str] = os.getenv("MONGODB_PASSWORD", "Awr20020311")
+    # MONGODB_AUTH_SOURCE: Optional[str] = os.getenv("MONGODB_AUTH_SOURCE", "admin")
     
     # Gemini API 配置
     GEMINI_API_KEY: str = os.getenv("GEMINI_API_KEY", "AIzaSyC3H7E-QNYloxM7jHcLcL9FHEYhqvhoF5M")
@@ -50,9 +60,11 @@ class Settings(BaseSettings):
     # Redis 配置（可选）
     REDIS_URL: Optional[str] = None
     
-    # 服务配置
+    # 服务配置 - 本地开发环境
     PORT: int = 8000
-    HOST: str = "0.0.0.0"
+    HOST: str = "localhost"  # 本地开发使用localhost
+    # 生产环境配置（注释保留）
+    # HOST: str = "0.0.0.0"
     
     # 日志配置
     LOG_LEVEL: str = "INFO"
