@@ -10,22 +10,22 @@ class Settings(BaseSettings):
     VERSION: str = "1.0.0"
     API_V1_STR: str = "/api/v1"
     
-    # 环境标识 - 本地开发环境
-    ENVIRONMENT: str = os.getenv("ENVIRONMENT", "local")  # local, production
+    # 环境标识 - 生产环境
+    ENVIRONMENT: str = os.getenv("ENVIRONMENT", "production")  # local, production
     
-    # MongoDB 配置 - 本地开发环境
+    # MongoDB 配置 - 生产环境
     MONGODB_URL: str = "mongodb://localhost:27017"
-    MONGODB_DB_NAME: str = "realm_of_balance_local"  # 本地开发数据库名
-    MONGODB_USERNAME: Optional[str] = os.getenv("MONGODB_USERNAME", None)  # 本地无需认证
-    MONGODB_PASSWORD: Optional[str] = os.getenv("MONGODB_PASSWORD", None)  # 本地无需认证
-    MONGODB_AUTH_SOURCE: Optional[str] = os.getenv("MONGODB_AUTH_SOURCE", None)  # 本地无需认证
+    MONGODB_DB_NAME: str = "realm_of_balance"
+    MONGODB_USERNAME: Optional[str] = os.getenv("MONGODB_USERNAME", "root")
+    MONGODB_PASSWORD: Optional[str] = os.getenv("MONGODB_PASSWORD", "Awr20020311")
+    MONGODB_AUTH_SOURCE: Optional[str] = os.getenv("MONGODB_AUTH_SOURCE", "admin")
     
-    # 生产环境MongoDB配置（注释保留）
+    # 本地开发环境MongoDB配置（注释保留）
     # MONGODB_URL: str = "mongodb://localhost:27017"
-    # MONGODB_DB_NAME: str = "realm_of_balance"
-    # MONGODB_USERNAME: Optional[str] = os.getenv("MONGODB_USERNAME", "root")
-    # MONGODB_PASSWORD: Optional[str] = os.getenv("MONGODB_PASSWORD", "Awr20020311")
-    # MONGODB_AUTH_SOURCE: Optional[str] = os.getenv("MONGODB_AUTH_SOURCE", "admin")
+    # MONGODB_DB_NAME: str = "realm_of_balance_local"  # 本地开发数据库名
+    # MONGODB_USERNAME: Optional[str] = os.getenv("MONGODB_USERNAME", None)  # 本地无需认证
+    # MONGODB_PASSWORD: Optional[str] = os.getenv("MONGODB_PASSWORD", None)  # 本地无需认证
+    # MONGODB_AUTH_SOURCE: Optional[str] = os.getenv("MONGODB_AUTH_SOURCE", None)  # 本地无需认证
     
     # Gemini API 配置
     GEMINI_API_KEY: str = os.getenv("GEMINI_API_KEY", "AIzaSyC3H7E-QNYloxM7jHcLcL9FHEYhqvhoF5M")
@@ -38,7 +38,7 @@ class Settings(BaseSettings):
     OPENAI_MODEL_NAME: str = "gpt-4o-mini"
     
     # Kimi API 配置（Moonshot）
-    KIMI_API_KEY: str = os.getenv("KIMI_API_KEY", "")
+    KIMI_API_KEY: str = os.getenv("KIMI_API_KEY", "sk-k6FqWbmEJJa9TKxK39fjCEflSG7JraFGlK2BnhAYcaHi89PJ")
     KIMI_API_URL: str = "https://api.moonshot.cn/v1/chat/completions"
     KIMI_MODEL_NAME: str = "moonshot-v1-8k"
     
@@ -65,12 +65,12 @@ class Settings(BaseSettings):
     # Redis 配置（可选）
     REDIS_URL: Optional[str] = None
     
-    # 服务配置 - 本地开发环境
-    PORT: int = 8001  # 使用8001端口避免与Cursor冲突
-    HOST: str = "localhost"  # 本地开发使用localhost
-    # 生产环境配置（注释保留）
-    # PORT: int = 8000
-    # HOST: str = "0.0.0.0"
+    # 服务配置 - 生产环境
+    PORT: int = 8000
+    HOST: str = "0.0.0.0"
+    # 本地开发环境配置（注释保留）
+    # PORT: int = 8001  # 使用8001端口避免与Cursor冲突
+    # HOST: str = "localhost"  # 本地开发使用localhost
     
     # 日志配置
     LOG_LEVEL: str = "INFO"

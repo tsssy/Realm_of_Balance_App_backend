@@ -1,20 +1,20 @@
-# 五行计算指令
+# Five Elements Calculation Instructions
 
-## 任务
-基于用户出生信息计算五行元素分布。
+## Task
+Calculate Five Elements distribution based on user's birth information.
 
-## 输入
-- 性别：${gender}
-- 出生日期：${birth_date}  
-- 出生时间：${birth_time}
-- 出生地点：${birth_location}
+## Input
+- Gender: ${gender}
+- Birth Date: ${birth_date}  
+- Birth Time: ${birth_time}
+- Birth Location: ${birth_location}
 
-## 计算要求
-1. 计算八字四柱的五行强度
-2. 生成五行分布图表数据
+## Calculation Requirements
+1. Calculate Five Elements strength of the four pillars (Ba Zi)
+2. Generate Five Elements distribution chart data
 
-## 输出格式
-严格按照以下JSON格式输出：
+## Output Format
+Strictly follow this JSON format:
 
 ```json
 {
@@ -22,18 +22,18 @@
     "title": "Elemental Composition",
     "description": "These are the five fundamental energies that form your inner world.",
     "chart_data": [
-      {"axis": "金 | Metal", "value": 数值},
-      {"axis": "木 | Wood", "value": 数值},
-      {"axis": "水 | Water", "value": 数值},
-      {"axis": "火 | Fire", "value": 数值},
-      {"axis": "土 | Earth", "value": 数值}
+      {"axis": "Metal", "value": numeric_value},
+      {"axis": "Wood", "value": numeric_value},
+      {"axis": "Water", "value": numeric_value},
+      {"axis": "Fire", "value": numeric_value},
+      {"axis": "Earth", "value": numeric_value}
     ]
   }
 }
 ```
 
-## 要求
-- 只输出五行计算，不要其他内容
-- 数值范围：0-100
-- 严格按照JSON格式
-- 确保输出的所有内容是英文。这非常重要
+## Requirements
+- Output only Five Elements calculation, no other content
+- Value range: 0-100
+- Strictly follow JSON format
+- Ensure all output content is in English. This is very important

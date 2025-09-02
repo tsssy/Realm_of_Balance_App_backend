@@ -44,17 +44,18 @@ app = FastAPI(
     lifespan=lifespan
 )
 
-# 配置 CORS - 本地开发环境
+# 配置 CORS - 生产环境
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
-        "http://localhost:3000",             # 本地前端开发环境
-        "http://127.0.0.1:3000",             # 本地前端开发环境（备用）
-        # 生产环境域名（注释保留，方便切换）
-        # "https://mystelleastro.com",         # 新的主域名
-        # "https://www.mystelleastro.com",     # 新域名的www版本
-        # "https://realm.lovetapoversea.xyz",  # 使用子域名
-        # "https://8.216.32.239",              # HTTPS IP访问 (主要)
+        "https://mystelleastro.com",         # 新的主域名
+        "https://www.mystelleastro.com",     # 新域名的www版本
+        "https://realm.lovetapoversea.xyz",  # 使用子域名
+        "https://8.216.32.239",              # HTTPS IP访问 (主要)
+        "http://localhost:3000",             # 本地前端开发环境（保留用于测试）
+        # 本地开发环境域名（注释保留，方便切换）
+        # "http://localhost:3000",             # 本地前端开发环境
+        # "http://127.0.0.1:3000",             # 本地前端开发环境（备用）
     ],
     allow_credentials=True,
     allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
